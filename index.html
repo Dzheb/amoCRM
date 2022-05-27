@@ -1,0 +1,315 @@
+<!-- <?php
+  header('Access-Control-Allow-Origin: *');
+  $data = ["foo" => "bar", "bar" => "baz"];
+  $json = json_encode($data);
+  $functionName = $_GET['callback'];
+  echo "$functionName($json);";
+?> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   <script>
+// начало авторизации
+
+// конец авторизации
+
+    const limit = 25;
+    let page = 1;
+    let getContactsListQueryUrl = 'https://bmd2006.amocrm.ru/api/v4/contacts';
+    let postTaskQueryUrl = 'https://bmd2006.amocrm.ru/api/v4/tasks';
+    let authQueryUrl = 'https://bmd2006.amocrm.ru/oauth2/access_token';
+    let authID = '9702f35b-c94e-4434-922d-678a5ce7ed5e';
+    let authSecret = 'EqlCxMtlEtceMRyD4y4YknUSt3LrVReW7XvzhFsaO98w9Sa9S8IfzS5BkxEMhFKp';
+    let authCode = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImQ0YzJhM2ExY2M4OTk0MjQ0YWJiM2RlM2NlYTMwNDI3MmI3OGI5YjYwMGY0NTZkOGM1NWMxODdjYWJhZmIwYjA2MmIzNGEwYWU1NWQ2YTlhIn0.eyJhdWQiOiIyMTZjOGU4Yy1jZjU2LTQ2YzgtOTdkOS03YzUwZDIxMGRiYTQiLCJqdGkiOiJkNGMyYTNhMWNjODk5NDI0NGFiYjNkZTNjZWEzMDQyNzJiNzhiOWI2MDBmNDU2ZDhjNTVjMTg3Y2FiYWZiMGIwNjJiMzRhMGFlNTVkNmE5YSIsImlhdCI6MTY1MTA4MzM2MiwibmJmIjoxNjUxMDgzMzYyLCJleHAiOjE2NTExNjk3NjIsInN1YiI6IjgxMjQ2NDYiLCJhY2NvdW50X2lkIjozMDEyNzM2MCwic2NvcGVzIjpbInB1c2hfbm90aWZpY2F0aW9ucyIsImNybSIsIm5vdGlmaWNhdGlvbnMiXX0.JZ602F31mBUCuXdlBL8nch0SIzWM42DVDVmTtPRpjlpoTGIIiZ5qhL9Uoo3BMnFPtDdf_svJ5V3DqO54LO786XO2oHBXMcOsp_LK7NgrLTVyWgdhAxoJxysmcE1WhH_UcRI3an_niEIkA1WOrtK8C3bTy23eHTjeHm21-2zZkoqRG9jMoVfJX2bTi4kfA5EKGlvr1UnYja-hPESPJKEQbq7ZMSdvMBm-rRcNnN9pL__eZv1xFdelCVrye7gzwR7LSJtj_KXQi3kO4yZwgwL3YJs7HHPzZ3P80L6r4R0HHiFCUiIAcbvaEf9IFRseZJBd8lnDasZLgsNcnUk1te0lzQ';
+
+    function reqAuth() {
+        $.ajax({
+            
+            url: authQueryUrl,
+            method: 'POST',
+            data: {
+                    "client_id": authID,
+                    "client_secret": authSecret,
+                    "grant_type": "authorization_code",
+                    "code": authCode,
+                    "redirect_uri": "https://test.test"   
+                }
+
+        }).done(function(data) {
+            if (!!data) {
+                console.log('Задача внесена')
+    
+            } else {
+                console.log('Задача не внесена');
+                return false;
+            }
+        }).fail(function(data) {
+            console.log('Что-то пошло не так');
+            // console.log(contact_id);
+            return false;
+        })
+    }
+    
+
+    function postTask(contact_id) {
+        $.ajax({
+            url: postTaskQueryUrl,
+            method: 'POST',
+            Authorization: authCode,
+            data:
+            // 
+            [
+                {
+                    "text":"Контакт без сделок",
+                    "complete_till":1653685200,
+                    "entity_id":45137915,
+                    "entity_type":"contacts"
+                },
+                {"text":"Контакт без сделок","complete_till":1653835200,"entity_id":45137915,"entity_type":"contacts"},
+                {"text":"Контакт без сделок","complete_till":1904685200,"entity_id":45137915,"entity_type":"contacts"},
+                {"text":"Контакт без сделок","complete_till":1653685123,"entity_id":45137915,"entity_type":"contacts"}
+            ]
+            // [
+            //     {
+            //         "text": "Контакт без сделок",
+            //         "complete_till": 1653685200,
+            //         "entity_id": contact_id,
+            //         "entity_type": "contacts" 
+                    
+            //     }
+            // ]
+            [
+                {
+                    "task_type_id": 1,
+                    "text": "Контакт без сделок",
+                    "complete_till": 1653685200,
+                    "entity_id": 45137915,
+                    "entity_type": "contacts",
+                    "request_id": "02"
+                },
+                {
+                    "task_type_id": 1,
+                    "text": "Контакт без сделок",
+                    "complete_till": 1653685200,
+                    "entity_id": 45137825,
+                    "entity_type": "contacts",
+                    "request_id": "02"
+                }
+            ]
+
+        }).done(function(data) {
+            if (!!data) {
+                console.log('Задача внесена')
+    
+            } else {
+                console.log('Задача не внесена');
+                return false;
+            }
+        }).fail(function(data) {
+            console.log('Что-то пошло не так');
+            console.log(contact_id);
+            return false;
+        })
+    }
+    
+    function getContacts() {
+        $.ajax({
+            url: getContactsListQueryUrl,
+            method: 'GET',
+            Authorization: authCode,
+            data: {
+                limit: limit,
+                with: 'leads',
+                page: page
+            }
+        }).done(function(data) {
+            if (!!data) {
+                console.log(data)
+                return data
+    
+            } else {
+                console.log('Контактов нет');
+                return false;
+            }
+        }).fail(function(data) {
+            console.log('Что-то пошло не так c получением контактов');
+            console.log(data);
+            return false;
+        })
+    
+        page++;
+    };
+    // getContacts();
+var data = {"_page":1,"_links":{"self":{"href":"https://bmd2006.amocrm.ru/api/v4/contacts?page=1&limit=50"},"next":{"href":"https://bmd2006.amocrm.ru/api/v4/contacts?page=2&limit=50"}},"_embedded":{"contacts":[{"id":45137739,"name":"Иван Иванов","first_name":"Иван","last_name":"Иванов","responsible_user_id":8124646,"group_id":0,"created_by":8124646,"updated_by":8124646,"created_at":1650554744,"updated_at":1650554744,"closest_task_at":null,"is_deleted":false,"is_unsorted":false,"custom_fields_values":[{"field_id":957683,"field_name":"Телефон","field_code":"PHONE","field_type":"multitext","values":[{"value":"89219567845","enum_id":1230737,"enum_code":"WORK"}]},{"field_id":957685,"field_name":"Email","field_code":"EMAIL","field_type":"multitext","values":[{"value":"GMT2009@yandex.ru","enum_id":1230749,"enum_code":"WORK"}]}],"account_id":30127360,"_links":{"self":{"href":"https://bmd2006.amocrm.ru/api/v4/contacts/45137739"}},"_embedded":{"tags":[],"companies":[{"id":45137737,"_links":{"self":{"href":"https://bmd2006.amocrm.ru/api/v4/companies/45137737"}}}],"leads": []}},{"id":45137825,"name":"Сидор Сидоров","first_name":"Сидор","last_name":"Сидоров","responsible_user_id":8124646,"group_id":0,"created_by":8124646,"updated_by":8124646,"created_at":1650554880,"updated_at":1650554880,"closest_task_at":null,"is_deleted":false,"is_unsorted":false,"custom_fields_values":[{"field_id":957683,"field_name":"Телефон","field_code":"PHONE","field_type":"multitext","values":[{"value":"89112345678","enum_id":1230737,"enum_code":"WORK"}]},{"field_id":957685,"field_name":"Email","field_code":"EMAIL","field_type":"multitext","values":[{"value":"NMR2004@yandex.ru","enum_id":1230749,"enum_code":"WORK"}]}],"account_id":30127360,"_links":{"self":{"href":"https://bmd2006.amocrm.ru/api/v4/contacts/45137825"}},"_embedded":{"tags":[],"companies":[{"id":45137823,"_links":{"self":{"href":"https://bmd2006.amocrm.ru/api/v4/companies/45137823"}}}]}},{"id":45137915,"name":"","first_name":"","last_name":"","responsible_user_id":8124646,"group_id":0,"created_by":8124646,"updated_by":8124646,"created_at":1650555052,"updated_at":1650555052,"closest_task_at":null,"is_deleted":false,"is_unsorted":false,"custom_fields_values":[{"field_id":957683,"field_name":"Телефон","field_code":"PHONE","field_type":"multitext","values":[{"value":"89014562345","enum_id":1230737,"enum_code":"WORK"}]},{"field_id":957685,"field_name":"Email","field_code":"EMAIL","field_type":"multitext","values":[{"value":"bty2004@yandex.ru","enum_id":1230749,"enum_code":"WORK"}]},{"field_id":957681,"field_name":"Должность","field_code":"POSITION","field_type":"text","values":[{"value":"менеджер"}]}],"account_id":30127360,"_links":{"self":{"href":"https://bmd2006.amocrm.ru/api/v4/contacts/45137915"}},"_embedded":{"tags":[],"companies":[{"id":45137737,"_links":{"self":{"href":"https://bmd2006.amocrm.ru/api/v4/companies/45137737"}}}],"leads": []}},{"id":45141185,"name":"","first_name":"","last_name":"","responsible_user_id":8124646,"group_id":0,"created_by":8124646,"updated_by":8124646,"created_at":1650556760,"updated_at":1650556761,"closest_task_at":null,"is_deleted":false,"is_unsorted":false,"custom_fields_values":null,"account_id":30127360,"_links":{"self":{"href":"https://bmd2006.amocrm.ru/api/v4/contacts/45141185"}},"_embedded":{"tags":[],"companies":[{"id":45141183,"_links":{"self":{"href":"https://bmd2006.amocrm.ru/api/v4/companies/45141183"}}}]}}]}}
+                   
+// start of data
+// {
+//         "_page": 1,
+//         "_links": {
+//         "self": {
+//             "href": "https://example.amocrm.ru/api/v4/contacts?limit=2&page=1"
+//         },
+//         "next": {
+//             "href": "https://example.amocrm.ru/api/v4/contacts?limit=2&page=2"
+//         }
+//     },
+//     "_embedded": {
+//             "contacts": [
+//                     {
+//                             "id": 7143599,
+//                             "name": "1",
+//                             "first_name": "",
+//                             "last_name": "",
+//                             "responsible_user_id": 504141,
+//                             "group_id": 0,
+//                             "created_by": 504141,
+//                             "updated_by": 504141,
+//                             "created_at": 1585758065,
+//                             "updated_at": 1585758065,
+//                             "closest_task_at": null,
+//                             "custom_fields_values": null,
+//                             "account_id": 28805383,
+//                             "_links": {
+//                                     "self": {
+//                                             "href": "https://example.amocrm.ru/api/v4/contacts/7143599"
+//                                         }
+//                                     },
+//                                     "_embedded": {
+//                                             "tags": [],
+//                                             "companies": [],
+//                                             "leads": [//                                         {
+//                                                 "id": 1,
+//                                                 "_links": {
+//                                                         "self": {
+//                                                                 "href": "https://example.amocrm.ru/api/v4/leads/1"
+//                                                             }
+//                                                         }
+//                                                     },
+//                                                     {
+//                                                             "id": 3916883,
+//                                                             "_links": {
+//                                                                     "self": {
+//                                                                             "href": "https://example.amocrm.ru/api/v4/leads/3916883"
+//                                                                         }
+//                                                                     }
+//                                                                 }
+//                                                             ]
+//                                                                     }
+//                                                                 },
+//                                                                 // 
+//                                                                 {
+//                                                                         "id": 9999999,
+//                                                                         "name": "1",
+//                                                                         "first_name": "",
+//                                                                         "last_name": "",
+//                                                                         "responsible_user_id": 504141,
+//                                                                         "group_id": 0,
+//                                                                         "created_by": 504141,
+//                                                                         "updated_by": 504141,
+//                                                                         "created_at": 1585758065,
+//                                                                         "updated_at": 1585758065,
+//                                                                         "closest_task_at": null,
+//                                                                         "custom_fields_values": null,
+//                                                                         "account_id": 28805383,
+//                                                                         "_links": {
+//                                                                                 "self": {
+//                                                                                         "href": "https://example.amocrm.ru/api/v4/contacts/7143599"
+//                                                                                     }
+//                                                                                 },
+//                                                                                 "_embedded": {
+//                                                                                         "tags": [],
+//                                                                                         "companies": [],
+//                                                                                         "leads": []
+                                                                    
+//                                                                                     }
+//                                                                                 },
+//                                                                                 // 
+//                                                                                 {
+//                                                                                         "id": 7767065,
+//                 "name": "dsgdsg",
+//                 "first_name": "",
+//                 "last_name": "",
+//                 "responsible_user_id": 504141,
+//                 "group_id": 0,
+//                 "created_by": 504141,
+//                 "updated_by": 504141,
+//                 "created_at": 1586359590,
+//                 "updated_at": 1586359590,
+//                 "closest_task_at": null,
+//                 "custom_fields_values": null,
+//                 "account_id": 28805383,
+//                 "_links": {
+//                     "self": {
+//                         "href": "https://example.amocrm.ru/api/v4/contacts/7767065"
+//                     }
+//                 },
+//                 "_embedded": {
+//                         "tags": [],
+//                         "companies": [],
+//                         // "leads": []
+//                     }
+//                 }
+//             ]
+//         }
+// }
+// end of data
+    // (let x in dat_contacts) 
+    // document.getElementById("demo2").innerHTML = data;   
+    let txt = [];
+    let dat_contacts = data._embedded.contacts
+    for (let i = 0; i < dat_contacts.length; i++){
+        // txt += JSON.stringify(dat_contacts[i]);
+        txt[i] = dat_contacts[i].id;
+        //если в контакте нет сделок
+        if (!Object.keys(dat_contacts[i]._embedded).includes('leads')){
+            // if (dat_contacts[i]._embedded.leads.length == 0){
+            //     console.log('нет!');
+            // || !dat_contacts[i]._embedded.leads.length
+            // }
+            console.log('Контакт без сделок!'+ txt[i]);
+            // postTask(dat_contacts[i].id);
+ 
+        } else if (!dat_contacts[i]._embedded.leads.length) {
+            console.log(dat_contacts[i]._embedded.leads.length);
+        } else {
+            console.log(dat_contacts[i]._embedded.leads.length);
+        }
+        
+    };
+    console.log(txt);
+
+// 
+
+// document.getElementById("demo2").innerHTML = txt;
+
+    // 
+    </script>
+</head>
+<body>
+
+<p id="demo"></p>
+<p id="demo1"></p>
+<p id="demo2"></p>
+<!-- <button type="button" onclick="getContacts()">Request data</button> -->
+
+
+<script>
+const d = new Date(1653685200000);
+const dx = "2022.05.20";
+const e = Math.floor(new Date(dx).getTime() / 1000)
+// var data = getContacts();
+document.getElementById("demo").innerHTML = d;
+document.getElementById("demo1").innerHTML = e;
+document.getElementById("demo2").innerHTML = txt;
+
+
+</script>
+  
+</body>
+</html>
